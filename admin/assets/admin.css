@@ -1,0 +1,71 @@
+﻿.dbbp-wrap .dbbp-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 16px;
+	margin: 16px 0;
+}
+
+.dbbp-card {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 16px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.dbbp-status {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 999px;
+	font-size: 11px;
+	font-weight: 600;
+}
+
+.dbbp-status-success {
+	background: #dff7e4;
+	color: #116329;
+}
+
+.dbbp-status-failed {
+	background: #ffe4e4;
+	color: #9f1b1b;
+}
+
+.dbbp-status-pending {
+	background: #fff4dc;
+	color: #784f00;
+}
+
+.dbbp-manual-run,
+.dbbp-form-grid {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 16px;
+	margin: 20px 0;
+}
+
+.dbbp-form-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 12px;
+}
+
+.dbbp-form-grid label {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.dbbp-filter-row {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin: 12px 0 16px;
+}
+
+@media (max-width: 782px) {
+	.dbbp-filter-row {
+		flex-direction: column;
+	}
+}

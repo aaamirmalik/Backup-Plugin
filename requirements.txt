@@ -1,0 +1,27 @@
+﻿PHP >= 7.4
+WordPress >= 6.0
+
+Required PHP extensions:
+- pdo
+- openssl
+- zip
+- zlib
+- json
+- mbstring
+
+Recommended PHP extensions:
+- pdo_mysql
+- pdo_pgsql
+- pdo_sqlite
+
+Required system binaries (by configured database type):
+- mysqldump (MySQL/MariaDB)
+- pg_dump (PostgreSQL/NeonDB)
+- mongodump (MongoDB, optional)
+- sqlcmd (Microsoft SQL Server, optional)
+
+Network requirements:
+- Outbound HTTPS to:
+  - accounts.google.com
+  - oauth2.googleapis.com
+  - www.googleapis.com
