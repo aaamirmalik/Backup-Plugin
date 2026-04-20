@@ -329,6 +329,10 @@ class DBBP_DB_Connector {
 	 * @return bool
 	 */
 	private function binary_exists( $binary ) {
+		if ( ! $this->is_exec_available() ) {
+			return false;
+		}
+
 		$output   = array();
 		$exitcode = 1;
 
@@ -340,6 +344,25 @@ class DBBP_DB_Connector {
 
 		exec( $cmd, $output, $exitcode );
 		return 0 === (int) $exitcode;
+	}
+
+	/**
+	 * Check whether exec is callable in this environment.
+	 *
+	 * @return bool
+	 */
+	private function is_exec_available() {
+		if ( ! function_exists( 'exec' ) ) {
+			return false;
+		}
+
+		$disabled = ini_get( 'disable_functions' );
+		if ( empty( $disabled ) ) {
+			return true;
+		}
+
+		$list = array_map( 'trim', explode( ',', strtolower( (string) $disabled ) ) );
+		return ! in_array( 'exec', $list, true );
 	}
 }
 

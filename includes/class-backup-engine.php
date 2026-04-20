@@ -215,6 +215,13 @@ class DBBP_Backup_Engine {
 	 * @return array
 	 */
 	private function execute_dump_command( $conn, $output_file ) {
+		if ( ! $this->is_exec_available() ) {
+			return array(
+				'success' => false,
+				'message' => 'Server command execution is disabled (exec). Ask your host to enable exec/proc functions or use a host that allows CLI database tools.',
+			);
+		}
+
 		$type = $conn['type'] ?? '';
 		$cmd  = '';
 
@@ -457,6 +464,10 @@ class DBBP_Backup_Engine {
 	 * @return bool
 	 */
 	private function binary_exists( $binary ) {
+		if ( ! $this->is_exec_available() ) {
+			return false;
+		}
+
 		$output   = array();
 		$exitcode = 1;
 
@@ -468,6 +479,25 @@ class DBBP_Backup_Engine {
 
 		exec( $cmd, $output, $exitcode );
 		return 0 === (int) $exitcode;
+	}
+
+	/**
+	 * Check whether exec is callable in this environment.
+	 *
+	 * @return bool
+	 */
+	private function is_exec_available() {
+		if ( ! function_exists( 'exec' ) ) {
+			return false;
+		}
+
+		$disabled = ini_get( 'disable_functions' );
+		if ( empty( $disabled ) ) {
+			return true;
+		}
+
+		$list = array_map( 'trim', explode( ',', strtolower( (string) $disabled ) ) );
+		return ! in_array( 'exec', $list, true );
 	}
 
 	/**
