@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Plugin Name: DB Backup Pro
  * Plugin URI: https://example.com/db-backup-pro
