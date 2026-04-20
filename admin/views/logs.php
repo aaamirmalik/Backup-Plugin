@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Logs view.
  *
@@ -59,14 +59,19 @@ $logs    = $data['logs'];
 				<th><?php esc_html_e( 'File', 'db-backup-pro' ); ?></th>
 				<th><?php esc_html_e( 'File Size', 'db-backup-pro' ); ?></th>
 				<th><?php esc_html_e( 'Status', 'db-backup-pro' ); ?></th>
+				<th><?php esc_html_e( 'Message', 'db-backup-pro' ); ?></th>
 				<th><?php esc_html_e( 'Actions', 'db-backup-pro' ); ?></th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php if ( empty( $logs ) ) : ?>
-				<tr><td colspan="7"><?php esc_html_e( 'No logs found.', 'db-backup-pro' ); ?></td></tr>
+				<tr><td colspan="8"><?php esc_html_e( 'No logs found.', 'db-backup-pro' ); ?></td></tr>
 			<?php else : ?>
 				<?php foreach ( $logs as $log ) : ?>
+					<?php
+					$message = isset( $log['message'] ) ? (string) $log['message'] : '';
+					$short   = mb_strlen( $message ) > 120 ? mb_substr( $message, 0, 120 ) . '...' : $message;
+					?>
 					<tr>
 						<td><?php echo esc_html( $log['created_at'] ); ?></td>
 						<td><?php echo esc_html( $log['db_name'] . ' (' . $log['db_type'] . ')' ); ?></td>
@@ -74,13 +79,16 @@ $logs    = $data['logs'];
 						<td><?php echo esc_html( $log['filename'] ); ?></td>
 						<td><?php echo esc_html( size_format( (int) $log['file_size'] ) ); ?></td>
 						<td><span class="dbbp-status dbbp-status-<?php echo esc_attr( $log['status'] ); ?>"><?php echo esc_html( strtoupper( $log['status'] ) ); ?></span></td>
+						<td title="<?php echo esc_attr( $message ); ?>"><?php echo esc_html( $short ); ?></td>
 						<td>
-							<form method="post" action="<?php echo esc_url( admin_url( 'admin.php?page=dbbp-logs' ) ); ?>" style="display:inline-block;">
-								<?php wp_nonce_field( 'dbbp_action_download_backup', 'dbbp_nonce' ); ?>
-								<input type="hidden" name="dbbp_action" value="download_backup" />
-								<input type="hidden" name="log_id" value="<?php echo esc_attr( $log['id'] ); ?>" />
-								<button type="submit" class="button button-small"><?php esc_html_e( 'Download', 'db-backup-pro' ); ?></button>
-							</form>
+							<?php if ( ! empty( $log['filename'] ) ) : ?>
+								<form method="post" action="<?php echo esc_url( admin_url( 'admin.php?page=dbbp-logs' ) ); ?>" style="display:inline-block;">
+									<?php wp_nonce_field( 'dbbp_action_download_backup', 'dbbp_nonce' ); ?>
+									<input type="hidden" name="dbbp_action" value="download_backup" />
+									<input type="hidden" name="log_id" value="<?php echo esc_attr( $log['id'] ); ?>" />
+									<button type="submit" class="button button-small"><?php esc_html_e( 'Download', 'db-backup-pro' ); ?></button>
+								</form>
+							<?php endif; ?>
 							<form method="post" action="<?php echo esc_url( admin_url( 'admin.php?page=dbbp-logs' ) ); ?>" style="display:inline-block;">
 								<?php wp_nonce_field( 'dbbp_action_reupload_backup', 'dbbp_nonce' ); ?>
 								<input type="hidden" name="dbbp_action" value="reupload_backup" />

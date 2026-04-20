@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * DB connector and credentials helper.
  *
@@ -329,11 +329,20 @@ class DBBP_DB_Connector {
 	 * @return bool
 	 */
 	private function binary_exists( $binary ) {
-		$cmd    = strtoupper( substr( PHP_OS, 0, 3 ) ) === 'WIN' ? 'where ' : 'command -v ';
-		$output = shell_exec( $cmd . escapeshellarg( $binary ) . ' 2>&1' );
-		return ! empty( $output );
+		$output   = array();
+		$exitcode = 1;
+
+		if ( strtoupper( substr( PHP_OS, 0, 3 ) ) === 'WIN' ) {
+			$cmd = 'where ' . escapeshellarg( $binary ) . ' > NUL 2>&1';
+		} else {
+			$cmd = 'command -v ' . escapeshellarg( $binary ) . ' > /dev/null 2>&1';
+		}
+
+		exec( $cmd, $output, $exitcode );
+		return 0 === (int) $exitcode;
 	}
 }
+
 
 
 

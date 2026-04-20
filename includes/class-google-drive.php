@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Google Drive integration.
  *
@@ -110,7 +110,7 @@ class DBBP_Google_Drive {
 
 		$body = json_decode( wp_remote_retrieve_body( $resp ), true );
 		if ( empty( $body['access_token'] ) ) {
-			return array( 'handled' => true, 'success' => false, 'message' => 'Unable to fetch access token.' );
+			return array( 'handled' => true, 'success' => false, 'message' => 'Unable to fetch access token: ' . wp_json_encode( $body ) );
 		}
 
 		$settings['access_token']    = $this->encrypt( $body['access_token'] );
@@ -450,7 +450,7 @@ class DBBP_Google_Drive {
 		}
 		$data = json_decode( wp_remote_retrieve_body( $resp ), true );
 		if ( empty( $data['access_token'] ) ) {
-			return new WP_Error( 'dbbp_refresh_failed', 'Google token refresh failed.' );
+			return new WP_Error( 'dbbp_refresh_failed', 'Google token refresh failed: ' . wp_json_encode( $data ) );
 		}
 
 		$settings['access_token']  = $this->encrypt( $data['access_token'] );
@@ -499,5 +499,9 @@ class DBBP_Google_Drive {
 		return false === $plain ? '' : $plain;
 	}
 }
+
+
+
+
 
 

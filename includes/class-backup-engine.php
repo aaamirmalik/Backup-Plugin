@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Backup engine.
  *
@@ -138,7 +138,6 @@ class DBBP_Backup_Engine {
 				)
 			);
 			$this->notify_failure( $db_name, $backup_type, $upload_result['message'] ?? 'Upload failure.' );
-			@unlink( $dump['path'] );
 			return $upload_result;
 		}
 
@@ -153,7 +152,6 @@ class DBBP_Backup_Engine {
 		);
 
 		$this->apply_retention( $backup_type, $db_key );
-		@unlink( $dump['path'] );
 
 		return array(
 			'success' => true,
@@ -444,7 +442,7 @@ class DBBP_Backup_Engine {
 		if ( ! is_array( $files ) ) {
 			return;
 		}
-		$max_age = time() - DAY_IN_SECONDS;
+		$max_age = time() - ( 30 * DAY_IN_SECONDS );
 		foreach ( $files as $file ) {
 			if ( is_file( $file ) && filemtime( $file ) < $max_age ) {
 				@unlink( $file );
@@ -459,9 +457,17 @@ class DBBP_Backup_Engine {
 	 * @return bool
 	 */
 	private function binary_exists( $binary ) {
-		$cmd    = strtoupper( substr( PHP_OS, 0, 3 ) ) === 'WIN' ? 'where ' : 'command -v ';
-		$output = shell_exec( $cmd . escapeshellarg( $binary ) . ' 2>&1' );
-		return ! empty( $output );
+		$output   = array();
+		$exitcode = 1;
+
+		if ( strtoupper( substr( PHP_OS, 0, 3 ) ) === 'WIN' ) {
+			$cmd = 'where ' . escapeshellarg( $binary ) . ' > NUL 2>&1';
+		} else {
+			$cmd = 'command -v ' . escapeshellarg( $binary ) . ' > /dev/null 2>&1';
+		}
+
+		exec( $cmd, $output, $exitcode );
+		return 0 === (int) $exitcode;
 	}
 
 	/**
@@ -479,3 +485,6 @@ class DBBP_Backup_Engine {
 		return $env_key . '=' . escapeshellarg( $value ) . ' ' . $cmd;
 	}
 }
+
+
+
